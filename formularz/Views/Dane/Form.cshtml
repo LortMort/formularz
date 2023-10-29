@@ -1,0 +1,51 @@
+﻿@model formularz.Models.Dane
+
+@{
+    ViewData["Title"] = "Form";
+}
+@using (Html.BeginForm("Form", "Dane", FormMethod.Post))
+{
+    @Html.ValidationSummary(false, "", new{@class = "text-danger"})
+    <p>
+        Imie: @Html.TextBoxFor(a => a.Imie)
+    </p>
+    <p>
+        Nazwisko: @Html.TextBoxFor(a => a.Nazwisko)
+    </p>
+    <p>
+        Email: @Html.TextBoxFor(a => a.Email)
+    </p>
+    <p>
+        Hasło: @Html.TextBoxFor(a => a.Password)
+    </p>
+    <p>
+        Potwierdzenie hasła: @Html.TextBoxFor(a => a.PasswordConfirmation)
+    </p>
+    <p>
+        Nr Tel.: @Html.TextBoxFor(a => a.Phone)
+    </p>
+    <p>
+        Wiek: @Html.TextBoxFor(a => a.Wiek)
+    </p>
+    <input type="submit" />
+}
+@*<form asp-action="Form" method="POST">
+    <div>
+        <label asp-for="Imie">Twoje Imie</label>
+        <input asp-for="Imie" />
+    </div>
+    <div>
+        <label asp-for="Email">Twoj Email</label>
+        <input asp-for="Email" />
+    </div>
+    <div>
+        <label asp-for="Temat">Twoj Temat</label>
+        <input asp-for="Temat" />
+    </div>
+    <div>
+        <label asp-for="Tresc">Twoja Tresc</label>
+        <input asp-for="Tresc" />
+    </div>
+    <div asp-validation-summary="All"></div>
+    <input type="submit" />
+</form>*@
