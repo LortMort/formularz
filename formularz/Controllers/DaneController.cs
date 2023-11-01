@@ -15,11 +15,11 @@ namespace formularz.Controllers
         {
             if (ModelState.IsValid)
             {
-                return View("Wynik", dane);
+                return View("RegistrationSuccess", dane);
             }
-            else return View();
+            else return View(dane);
         }
-        public IActionResult Wynik(Dane dane)
+        public ActionResult RegistrationSuccess(Dane dane)
         {
             return View(dane);
         }

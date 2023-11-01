@@ -4,33 +4,44 @@ namespace formularz.Models
 {
     public class Dane
     {
-     
-        [Required(ErrorMessage = "Prosze podaj Imie")]
-        [MinLength(2)]
+
+        [Required(ErrorMessage = "Pole 'Imię' jest wymagane.")]
+        [MinLength(2, ErrorMessage = "Imię musi mieć co najmniej 2 znaki.")]
+        [Display(Name = "Imie: ")]
         public string Imie { get; set; }
 
-        [Required(ErrorMessage = "Prosze podaj Nazwisko")]
-        [MinLength(2)]
+        [Required(ErrorMessage = "Pole 'Nazwisko' jest wymagane.")]
+        [MinLength(2, ErrorMessage = "Nazwisko musi mieć co najmniej 2 znaki.")]
+        [Display(Name = "Nazwisko: ")]
         public string Nazwisko { get; set; }
 
-        [Required(ErrorMessage = "Prosze podaj Email")]
-        [EmailAddress]
+        [Required(ErrorMessage = "Pole 'Adres e-mail' jest wymagane.")]
+        [EmailAddress(ErrorMessage = "Niepoprawny adres e-mail.")]
+        [Display(Name = "Email: ")]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "Podaj Hasło")]
-        [DataType(DataType.Password)]
-        public string Password { get; set; }
+        [Required(ErrorMessage = "Pole 'Hasło' jest wymagane.")]
+        [MinLength(8, ErrorMessage = "Hasło musi mieć co najmniej 8 znaków.")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$", ErrorMessage = "Hasło musi zawierać co najmniej jedną małą literę, jedną dużą literę i jedną cyfrę.")]
+        [Display(Name = "Hasło: ")]
+        public string Haslo { get; set; }
 
-        [Required(ErrorMessage = "Podaj potwierdzenie hasła")]
-        [DataType(DataType.Password)]
-        public string PasswordConfirmation { get; set; }
+        [Required(ErrorMessage = "Pole 'Potwierdzenie Hasła' jest wymagane.")]
+        [Compare("Haslo", ErrorMessage = "Hasło i potwierdzenie hasła nie pasują do siebie.")]
+        [Display(Name = "Potwierdzenie Hasła: ")]
+        public string PotwierdzenieHasla { get; set; }
 
-        [DataType(DataType.PhoneNumber)]
-        public string Phone { get; set;}
+        [Phone]
+        [Display(Name = "Telefon: ")]
+        public string Telefon { get; set; }
 
-        [Range(10,80)]
+        [Range(10, 80, ErrorMessage = "Wiek musi wynosić od 10 do 80 lat.")]
+        [Display(Name = "Wiek: ")]
         public int Wiek { get; set; }
 
+        [Display(Name = "Miasto: ")]
+        public string Miasto { get; set; }
+        public enum Miasta { Krakow = 1, Warszawa = 2, Gdańsk = 3, Poznań = 4, Wrocław = 5 }
 
 
     }

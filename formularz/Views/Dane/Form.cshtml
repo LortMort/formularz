@@ -3,49 +3,185 @@
 @{
     ViewData["Title"] = "Form";
 }
-@using (Html.BeginForm("Form", "Dane", FormMethod.Post))
+@using (Html.BeginForm("Form", "Dane", FormMethod.Post, new { id = "RegisterForm" }))
 {
-    @Html.ValidationSummary(false, "", new{@class = "text-danger"})
     <p>
-        Imie: @Html.TextBoxFor(a => a.Imie)
+    @Html.LabelFor(model => model.Imie)
+    @Html.TextBoxFor(model => model.Imie)
+    @Html.ValidationMessageFor(model => model.Imie)
+    <span class="error" id="ImieError"></span>
     </p>
+
     <p>
-        Nazwisko: @Html.TextBoxFor(a => a.Nazwisko)
+    @Html.LabelFor(model => model.Nazwisko)
+    @Html.TextBoxFor(model => model.Nazwisko)
+    @Html.ValidationMessageFor(model => model.Nazwisko)
+    <span class="error" id="NazwiskoError"></span>
     </p>
+
     <p>
-        Email: @Html.TextBoxFor(a => a.Email)
+    @Html.LabelFor(model => model.Email)
+    @Html.TextBoxFor(model => model.Email)
+    @Html.ValidationMessageFor(model => model.Email)
+        <span class="error" id="EmailError"></span>
     </p>
+
     <p>
-        Hasło: @Html.TextBoxFor(a => a.Password)
+    @Html.LabelFor(model => model.Haslo)
+        @Html.PasswordFor(model => model.Haslo)
+        @Html.ValidationMessageFor(model => model.Haslo)
+    <span class="error" id="HasloError"></span>
     </p>
+
     <p>
-        Potwierdzenie hasła: @Html.TextBoxFor(a => a.PasswordConfirmation)
+    @Html.LabelFor(model => model.PotwierdzenieHasla)
+        @Html.PasswordFor(model => model.PotwierdzenieHasla)
+        @Html.ValidationMessageFor(model => model.PotwierdzenieHasla)
+    <span class="error" id="PotwierdzenieHaslaError"></span>
     </p>
+
     <p>
-        Nr Tel.: @Html.TextBoxFor(a => a.Phone)
+    @Html.LabelFor(model => model.Telefon)
+    @Html.TextBoxFor(model => model.Telefon)
+    @Html.ValidationMessageFor(model => model.Telefon)
+    <span class="error" id="TelefonError"></span>
     </p>
+
     <p>
-        Wiek: @Html.TextBoxFor(a => a.Wiek)
+    @Html.LabelFor(model => model.Wiek)
+    @Html.TextBoxFor(model => model.Wiek, new { type = "number", min = "11", max = "80" })
+    @Html.ValidationMessageFor(model => model.Wiek)
+        <span class="error" id="WiekError"></span>
+    </p>
+
+    <p>Miasto: <select asp-for="Miasto"
+        asp-items="Html.GetEnumSelectList<Dane.Miasta>()">
+    </select>
+        <span id="MiastoError" class="error"></span>
     </p>
     <input type="submit" />
 }
-@*<form asp-action="Form" method="POST">
-    <div>
-        <label asp-for="Imie">Twoje Imie</label>
-        <input asp-for="Imie" />
-    </div>
-    <div>
-        <label asp-for="Email">Twoj Email</label>
-        <input asp-for="Email" />
-    </div>
-    <div>
-        <label asp-for="Temat">Twoj Temat</label>
-        <input asp-for="Temat" />
-    </div>
-    <div>
-        <label asp-for="Tresc">Twoja Tresc</label>
-        <input asp-for="Tresc" />
-    </div>
-    <div asp-validation-summary="All"></div>
-    <input type="submit" />
-</form>*@
+<br/>
+<button id="ClearAll">Wyczyść</button>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        function validateForm() {
+            let isValid = true;
+
+            // walidacja imienia
+            let imie = $("#Imie").val().trim();
+            if (imie === "") {
+                $("#ImieError").text("Pole 'Imię' jest wymagane.");
+                isValid = false;
+            } else if (imie.length < 2) {
+                $("#ImieError").text("Imię musi mieć co najmniej 2 znaki.");
+                isValid = false;
+            }else{
+                $("#ImieError").text("");
+            }
+
+            // walidacja nazwiska
+            let nazwisko = $("#Nazwisko").val().trim();
+            if (nazwisko === "") {
+                $("#NazwiskoError").text("Pole 'Nazwisko' jest wymagane.");
+                isValid = false;
+            } else if (nazwisko.length < 2) {
+                $("#NazwiskoError").text("Nazwisko musi mieć co najmniej 2 znaki.");
+                isValid = false;
+            } else {
+                $("#NazwiskoError").text("");
+            }
+
+            // Walidacja emaila
+            let email = $("#Email").val().trim();
+            if (email === "") {
+                $("#EmailError").text("Pole 'Adres e-mail' jest wymagane.");
+                isValid = false;
+            } else if (!isValidEmail(email)) {
+                $("#EmailError").text("Niepoprawny adres e-mail.");
+                isValid = false;
+            } else {
+                $("#EmailError").text("");
+            }
+
+            // Walidacja hasła
+            let haslo = $("#Haslo").val();
+
+            if (haslo.length < 8){
+                $("#HasloError").text("Hasło musi zawierać conajmniej 8 znaków");
+                isValid = false;
+            } else if (!isValidPassword(haslo)) {
+                $("#HasloError").text("Hasło musi zawierać conajmniej jedną mała literę, dużą literę oraz cyfrę");
+                isValid = false;
+            } else if (haslo == "") {
+                $("#HasloError").text("Pole 'Hasło' jest wymagane.");
+                isValid = false;
+            } else {
+                $("#HasloError").text("");
+            }
+
+
+            // Walidacja potwierdzenia hasła
+            let potwierdzenieHasła = $("#PotwierdzenieHasla").val();
+            if (potwierdzenieHasła !== haslo) {
+                $("#PotwierdzenieHaslaError").text("Hasło i potwierdzenie hasła nie pasują do siebie.");
+                isValid = false;
+            } else {
+                $("#PotwierdzenieHaslaError").text("");
+            }
+
+            // Walidacja telefonu
+            let telefon = $("#Telefon").val().trim();
+            if (!isValidPhoneNumber(telefon)) {
+                $("#TelefonError").text("Niepoprawny numer telefonu.");
+                isValid = false;
+            } else {
+                $("#TelefonError").text("");
+            }
+
+            // Walidacja wieku
+            let wiek = parseInt($("#Wiek").val());
+            if (isNaN(wiek) || wiek < 10 || wiek > 80) {
+                $("#WiekError").text("Wiek musi wynosić od 10 do 80 lat.");
+                isValid = false;
+            } else {
+                $("#WiekError").text("");
+            }
+
+            return isValid;
+        }
+
+        function isValidPassword(password) {
+            let passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
+            return passwordRegex.test(password);
+        }
+
+        function isValidEmail(email) {
+            let emailRegex = /^[A-Z0-9._%+-]+@@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+            return emailRegex.test(email);
+        }
+
+        function isValidPhoneNumber(phoneNumber) {
+            let phoneNumberRegex = /^\d{8,14}$/;
+            return phoneNumberRegex.test(phoneNumber);
+        }
+
+        // Nasłuchuj zdarzenie "submit" formularza
+        $("#RegisterForm").on("submit", function (event) {
+            checker = validateForm()
+            if (!checker) {
+                event.preventDefault();
+            }
+        });
+
+        $("#ClearAll").on("click", function (event) {
+            let RegisterForm = $("#RegisterForm");
+            let inputs = RegisterForm.find("p").find("input");
+            inputs.each(function () {
+                $(this).val("");
+            });
+
+        });
+    });
+</script>
